@@ -1,5 +1,6 @@
 package com.authy.api;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,11 +48,20 @@ public class UserStatusTest {
         assertEquals(String.format("[%s, %s]", DEVICE_A, DEVICE_B), userStatusMap.get("devices"));
     }
 
+    public void assertXMLEqualsNonStrict(String xml1, String xml2) {
+        try {
+            XMLAssert.assertXMLEqual(xml1, xml2);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     public void testToXML() {
         String userStatusXml = userStatus.toXML();
         assertNotNull(userStatusXml);
-        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+        assertXMLEqualsNonStrict("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
                         "<user_status><status>200</status><userId>1234</userId><success>true</success><confirmed>true</confirmed>" +
                         "<registered>true</registered><country_code>1</country_code>" +
                         "<devices><device>deviceA</device><device>deviceB</device></devices>" +
